@@ -19,7 +19,6 @@ public class Mechanic {
     public String getName() { return name; }
     public Specialization getSpecialization() { return specialization; }
 
-    // Методи для контролю зайнятості механіка
     public boolean isBusy() { return busy; }
     public void setBusy(boolean busy) { this.busy = busy; }
 
