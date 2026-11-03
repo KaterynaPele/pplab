@@ -4,6 +4,7 @@ D:\RI-21\PP\lab\src\main\java\carservice\CarService.java
 D:\RI-21\PP\lab\src\main\java\carservice\CarServiceDemo.java
 D:\RI-21\PP\lab\src\main\java\carservice\Client.java
 D:\RI-21\PP\lab\src\main\java\carservice\CorporateClient.java
+D:\RI-21\PP\lab\src\main\java\carservice\DefaultPricingPolicy.java
 D:\RI-21\PP\lab\src\main\java\carservice\InMemoryRepairOrderRepository.java
 D:\RI-21\PP\lab\src\main\java\carservice\Mechanic.java
 D:\RI-21\PP\lab\src\main\java\carservice\OrderStatus.java

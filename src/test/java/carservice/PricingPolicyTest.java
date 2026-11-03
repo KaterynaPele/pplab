@@ -12,8 +12,8 @@ class PricingPolicyTest {
 
     @ParameterizedTest
     @CsvSource({
-            "10.00, 20.00, 50.00", // Сума 30.00 < мін. fee 50.00 -> 50.00
-            "40.00, 30.00, 70.00"  // Сума 70.00 > мін. fee 50.00 -> 70.00
+            "10.00, 20.00, 50.00",
+            "40.00, 30.00, 70.00"
     })
     void shouldCalculateCommercialPriceWithMinimumFee(BigDecimal parts, BigDecimal labor, BigDecimal expected) {
         Client client = new Client("c1", "Standard Client");
@@ -21,7 +21,7 @@ class PricingPolicyTest {
         RepairOrder order = new RepairOrder("o1", car);
         order.addWork(new Work("Fix", parts, labor));
 
-        PricingPolicy policy = new PricingPolicy(new BigDecimal("50.00"));
+        PricingPolicy policy = new DefaultPricingPolicy(new BigDecimal("50.00"));
 
         BigDecimal result = policy.calculateCommercialPrice(order);
         assertEquals(expected, result);
@@ -36,7 +36,7 @@ class PricingPolicyTest {
         // Parts: 100 - 10% = 90; Labor: 100 - 20% = 80 -> Total = 170
         order.addWork(new Work("Engine overhaul", new BigDecimal("100.00"), new BigDecimal("100.00")));
 
-        PricingPolicy policy = new PricingPolicy(new BigDecimal("50.00"));
+        PricingPolicy policy = new DefaultPricingPolicy(new BigDecimal("50.00"));
 
         BigDecimal price = policy.calculateCommercialPrice(order);
         assertEquals(new BigDecimal("170.00"), price);

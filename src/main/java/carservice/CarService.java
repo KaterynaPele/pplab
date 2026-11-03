@@ -7,13 +7,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class CarService {
     private final RepairOrderRepository orderRepository;
     private final PricingPolicy pricingPolicy;
-
     private final Map<String, Client> clients = new HashMap<>();
     private final Map<String, Car> cars = new HashMap<>();
     private final Map<String, Mechanic> mechanics = new HashMap<>();
     private final AtomicInteger idGen = new AtomicInteger(1);
 
-    // Впровадження залежностей через конструктор
     public CarService(RepairOrderRepository orderRepository, PricingPolicy pricingPolicy) {
         this.orderRepository = orderRepository;
         this.pricingPolicy = pricingPolicy;
@@ -59,6 +57,19 @@ public class CarService {
     public BigDecimal getCommercialPrice(String orderId) {
         RepairOrder order = findOrderById(orderId);
         return pricingPolicy.calculateCommercialPrice(order);
+    }
+
+
+    public RepairOrder getOrderOrThrow(String id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("Order not found with ID: " + id));
+    }
+
+    public RepairOrder cancelOrder(String orderId) {
+        RepairOrder order = getOrderOrThrow(orderId);
+        order.cancel();
+        orderRepository.save(order);
+        return order;
     }
 
     public Mechanic findMechanicById(String id) { return mechanics.get(id); }

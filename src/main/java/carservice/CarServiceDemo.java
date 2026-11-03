@@ -1,17 +1,13 @@
 package carservice;
-
 import java.math.BigDecimal;
 
 public class CarServiceDemo {
-
     public static void main(String[] args) {
         RepairOrderRepository repository = new InMemoryRepairOrderRepository();
-        PricingPolicy pricingPolicy = new PricingPolicy(new BigDecimal("50.00")); // чи ваша реалізація політики
+        PricingPolicy pricingPolicy = new DefaultPricingPolicy(new BigDecimal("100.00"));
         CarService svc = new CarService(repository, pricingPolicy);
 
-        System.out.println("=== LAB 1 & LAB 2: SCENARIOS DEMONSTRATION ===");
-
-        System.out.println("\n--- Scenario 1: Register client, car, and mechanics ---");
+        System.out.println("\nScenario 1: Register client, car, and mechanics");
         Client alice = new Client("c1", "Alice");
         svc.registerClient(alice);
         Car car1 = new Car("VIN123", "Toyota", "Corolla", 2015, alice);
@@ -24,7 +20,7 @@ public class CarServiceDemo {
         svc.registerMechanic(m2);
         System.out.println("Registered mechanics: " + m1 + ", " + m2);
 
-        System.out.println("\n--- Scenario 2: Full successful cycle for order o1 ---");
+        System.out.println("\nScenario 2: Full successful cycle for order o1");
         try {
             RepairOrder o1 = svc.createOrderFor("o1", "VIN123");
             o1.addWork(new Work("Replace brake pads", new BigDecimal("50.00"), new BigDecimal("30.00")));
@@ -58,7 +54,7 @@ public class CarServiceDemo {
             System.out.println("Unexpected error in Scenario 2: " + ex.getMessage());
         }
 
-        System.out.println("\n--- Scenario 3: Attempt to approve empty order o2 ---");
+        System.out.println("\nScenario 3: Attempt to approve empty order o2");
         try {
             RepairOrder o2 = svc.createOrderFor("o2", "VIN123");
             System.out.println("Attempting to approve empty order o2...");
@@ -67,7 +63,7 @@ public class CarServiceDemo {
             System.out.println("Expected error: " + ex.getMessage());
         }
 
-        System.out.println("\n--- Scenario 4: Attempt to start o3 without mechanic ---");
+        System.out.println("\nScenario 4: Attempt to start o3 without mechanic");
         try {
             RepairOrder o3 = svc.createOrderFor("o3", "VIN123");
             o3.addWork(new Work("Check lights", BigDecimal.ZERO, new BigDecimal("10.00")));
@@ -79,13 +75,13 @@ public class CarServiceDemo {
             System.out.println("Expected error: " + ex.getMessage());
         }
 
-        System.out.println("\n--- Scenario 5: Attempt to assign busy mechanic m2 ---");
+        System.out.println("\nScenario 5: Attempt to assign busy mechanic m2");
         try {
             RepairOrder o4 = svc.createOrderFor("o4", "VIN123");
             o4.addWork(new Work("Engine tune", BigDecimal.ZERO, new BigDecimal("100.00")));
             o4.diagnose();
             o4.approve();
-            o4.assignMechanic(m2); // m2 becomes busy
+            o4.assignMechanic(m2);
             o4.start();
 
             RepairOrder o5 = svc.createOrderFor("o5", "VIN123");
@@ -98,7 +94,7 @@ public class CarServiceDemo {
             System.out.println("Expected error: " + ex.getMessage());
         }
 
-        System.out.println("\n--- Scenario 6: Attempt to modify completed order o6 ---");
+        System.out.println("\nScenario 6: Attempt to modify completed order o6");
         try {
             RepairOrder o6 = svc.createOrderFor("o6", "VIN123");
             o6.addWork(new Work("Simple check", BigDecimal.ZERO, new BigDecimal("5.00")));
@@ -115,7 +111,7 @@ public class CarServiceDemo {
             System.out.println("Expected error: " + ex.getMessage());
         }
 
-        System.out.println("\n--- Scenario 7: Forbidden transition (start directly from CREATED) ---");
+        System.out.println("\nScenario 7: Forbidden transition (start directly from CREATED)");
         try {
             RepairOrder o7 = svc.createOrderFor("o7", "VIN123");
             System.out.println("Attempting to start o7 directly from CREATED...");
@@ -125,7 +121,7 @@ public class CarServiceDemo {
         }
 
 
-        System.out.println("\n--- Scenario 8: Corporate client, discounts, and PricingPolicy ---");
+        System.out.println("\nScenario 8: Corporate client, discounts, and PricingPolicy");
         try {
             CorporateClient corpClient = new CorporateClient("c2", "Taxi Service", new BigDecimal("10"), new BigDecimal("20"));
             svc.registerClient(corpClient);
@@ -133,7 +129,7 @@ public class CarServiceDemo {
             svc.registerCar(corpCar);
 
             RepairOrder o8 = svc.createOrderFor("o8", "VIN777");
-            o8.addWork(new Work("Engine fix", new BigDecimal("100.00"), new BigDecimal("50.00"))); // Base price = 150.00
+            o8.addWork(new Work("Engine fix", new BigDecimal("100.00"), new BigDecimal("50.00")));
             o8.diagnose();
             o8.approve();
             o8.assignMechanic(m1);
@@ -148,6 +144,25 @@ public class CarServiceDemo {
             System.out.println("Error: " + ex.getMessage());
         }
 
-        System.out.println("\n=== All scenarios demonstration finished ===");
+        System.out.println("\nScenario 9: Successful order cancellation via service");
+        try {
+            RepairOrder o9 = svc.createOrderFor("o9", "VIN123");
+            o9.addWork(new Work("Filter replacement", new BigDecimal("15.00"), new BigDecimal("10.00")));
+            System.out.println("Order o9 status before cancel: " + o9.getStatus());
+
+            svc.cancelOrder("o9");
+            System.out.println("Order o9 status after cancel via service: " + o9.getStatus());
+        } catch (BusinessException ex) {
+            System.out.println("Unexpected error: " + ex.getMessage());
+        }
+
+        System.out.println("\nScenario 10: Attempt to add work to cancelled order o9");
+        try {
+            System.out.println("Attempting to add work to cancelled order o9...");
+            RepairOrder cancelledOrder = svc.getOrderOrThrow("o9");
+            cancelledOrder.addWork(new Work("New work", BigDecimal.ZERO, new BigDecimal("20.00")));
+        } catch (BusinessException ex) {
+            System.out.println("Expected error: " + ex.getMessage());
+        }
     }
 }
