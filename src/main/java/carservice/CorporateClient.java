@@ -12,6 +12,11 @@ public class CorporateClient extends Client {
         this.laborDiscount = laborDiscount;
     }
 
-    public BigDecimal getPartsDiscount() { return partsDiscount; }
-    public BigDecimal getLaborDiscount() { return laborDiscount; }
+    public BigDecimal getPartsDiscount() {
+        return partsDiscount;
+    }
+
+    public BigDecimal getLaborDiscount() {
+        return laborDiscount;
+    }
 }

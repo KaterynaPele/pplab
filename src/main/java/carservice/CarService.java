@@ -5,22 +5,23 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CarService {
-    private final RepairOrderRepository orderRepository;
+    private final RepairOrderRepository orderRepository = new InMemoryRepairOrderRepository();
     private final PricingPolicy pricingPolicy;
+
     private final Map<String, Client> clients = new HashMap<>();
     private final Map<String, Car> cars = new HashMap<>();
     private final Map<String, Mechanic> mechanics = new HashMap<>();
+
     private final AtomicInteger idGen = new AtomicInteger(1);
 
     public CarService(RepairOrderRepository orderRepository, PricingPolicy pricingPolicy) {
-        this.orderRepository = orderRepository;
         this.pricingPolicy = pricingPolicy;
     }
 
-    public void registerClient(Client c) {
-        if (c == null) throw new BusinessException("Client is null");
-        if (clients.containsKey(c.getId())) throw new BusinessException("Client id already exists");
-        clients.put(c.getId(), c);
+    public void registerClient(Client client) {
+        if (client == null) throw new BusinessException("Client is null");
+        if (clients.containsKey(client.getId())) throw new BusinessException("Client id already exists");
+        clients.put(client.getId(), client);
     }
 
     public void registerCar(Car car) {
@@ -72,8 +73,19 @@ public class CarService {
         return order;
     }
 
-    public Mechanic findMechanicById(String id) { return mechanics.get(id); }
-    public Collection<Mechanic> getMechanics() { return mechanics.values(); }
-    public Client getClientById(String id) { return clients.get(id); }
-    public Collection<RepairOrder> getOrders() { return orderRepository.findAll(); }
+    public Mechanic findMechanicById(String id) {
+        return mechanics.get(id);
+    }
+
+    public Collection<Mechanic> getMechanics() {
+        return mechanics.values();
+    }
+
+    public Client getClientById(String id) {
+        return clients.get(id);
+    }
+
+    public Collection<RepairOrder> getOrders() {
+        return orderRepository.findAll();
+    }
 }

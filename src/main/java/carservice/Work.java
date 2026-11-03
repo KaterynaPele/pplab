@@ -6,7 +6,7 @@ public class Work {
     private final String description;
     private final BigDecimal partsCost;
     private final BigDecimal laborCost;
-    private boolean done = false;
+    private boolean done;
 
     public Work(String description, BigDecimal partsCost, BigDecimal laborCost) {
         if (description == null || description.isBlank()) throw new BusinessException("Work description required");
