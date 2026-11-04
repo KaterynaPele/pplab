@@ -17,19 +17,4 @@ public class InMemoryRepairOrderRepository implements RepairOrderRepository {
         return Optional.ofNullable(storage.get(id));
     }
 
-    @Override
-    public Collection<RepairOrder> findAll() {
-        return Collections.unmodifiableCollection(storage.values());
-    }
-
-    @Override
-    public Collection<RepairOrder> findByVin(String vin) {
-        List<RepairOrder> result = new ArrayList<>();
-        for (RepairOrder order : storage.values()) {
-            if (order.getCar().getVin().equalsIgnoreCase(vin)) {
-                result.add(order);
-            }
-        }
-        return result;
-    }
 }

@@ -3,9 +3,8 @@ import java.math.BigDecimal;
 
 public class CarServiceDemo {
     public static void main(String[] args) {
-        RepairOrderRepository repository = new InMemoryRepairOrderRepository();
         PricingPolicy pricingPolicy = new DefaultPricingPolicy(new BigDecimal("100.00"));
-        CarService svc = new CarService(repository, pricingPolicy);
+        CarService svc = new CarService(pricingPolicy);
 
         System.out.println("\nScenario 1: Register client, car, and mechanics");
         Client alice = new Client("c1", "Alice");

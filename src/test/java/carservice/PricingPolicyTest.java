@@ -3,9 +3,7 @@ package carservice;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
 import java.math.BigDecimal;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class PricingPolicyTest {
@@ -33,7 +31,6 @@ class PricingPolicyTest {
         Car car = new Car("VIN2", "Skoda", "Octavia", 2021, corp);
         RepairOrder order = new RepairOrder("o2", car);
 
-        // Parts: 100 - 10% = 90; Labor: 100 - 20% = 80 -> Total = 170
         order.addWork(new Work("Engine overhaul", new BigDecimal("100.00"), new BigDecimal("100.00")));
 
         PricingPolicy policy = new DefaultPricingPolicy(new BigDecimal("50.00"));

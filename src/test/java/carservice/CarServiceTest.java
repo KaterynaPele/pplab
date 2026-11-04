@@ -17,7 +17,7 @@ class CarServiceTest {
     void setUp() {
         repository = mock(RepairOrderRepository.class);
         pricingPolicy = mock(PricingPolicy.class);
-        carService = new CarService(repository, pricingPolicy);
+        carService = new CarService(pricingPolicy);
     }
 
     @Test

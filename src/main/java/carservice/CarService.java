@@ -2,7 +2,6 @@ package carservice;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class CarService {
     private final RepairOrderRepository orderRepository = new InMemoryRepairOrderRepository();
@@ -12,9 +11,7 @@ public class CarService {
     private final Map<String, Car> cars = new HashMap<>();
     private final Map<String, Mechanic> mechanics = new HashMap<>();
 
-    private final AtomicInteger idGen = new AtomicInteger(1);
-
-    public CarService(RepairOrderRepository orderRepository, PricingPolicy pricingPolicy) {
+    public CarService(PricingPolicy pricingPolicy) {
         this.pricingPolicy = pricingPolicy;
     }
 
@@ -39,13 +36,16 @@ public class CarService {
     public RepairOrder createOrderFor(String orderId, String vin) {
         Car car = cars.get(vin);
         if (car == null) throw new BusinessException("Car not registered");
-        String id = (orderId == null || orderId.isBlank()) ? String.valueOf(idGen.getAndIncrement()) : orderId;
 
-        if (orderRepository.findById(id).isPresent()) {
+        if (orderId == null || orderId.isBlank()) {
+            throw new BusinessException("Order id cannot be null or blank");
+        }
+
+        if (orderRepository.findById(orderId).isPresent()) {
             throw new BusinessException("Order id already exists");
         }
 
-        RepairOrder order = new RepairOrder(id, car);
+        RepairOrder order = new RepairOrder(orderId, car);
         orderRepository.save(order);
         return order;
     }
@@ -60,32 +60,14 @@ public class CarService {
         return pricingPolicy.calculateCommercialPrice(order);
     }
 
-
     public RepairOrder getOrderOrThrow(String id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Order not found with ID: " + id));
     }
 
-    public RepairOrder cancelOrder(String orderId) {
+    public void cancelOrder(String orderId) {
         RepairOrder order = getOrderOrThrow(orderId);
         order.cancel();
         orderRepository.save(order);
-        return order;
-    }
-
-    public Mechanic findMechanicById(String id) {
-        return mechanics.get(id);
-    }
-
-    public Collection<Mechanic> getMechanics() {
-        return mechanics.values();
-    }
-
-    public Client getClientById(String id) {
-        return clients.get(id);
-    }
-
-    public Collection<RepairOrder> getOrders() {
-        return orderRepository.findAll();
     }
 }

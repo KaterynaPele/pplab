@@ -17,10 +17,15 @@ public class Work {
         this.laborCost = laborCost;
     }
 
-    public String getDescription() { return description; }
-    public BigDecimal getPartsCost() { return partsCost; }
-    public BigDecimal getLaborCost() { return laborCost; }
-    public boolean isDone() { return done; }
+    public BigDecimal getPartsCost() {
+        return partsCost;
+    }
+    public BigDecimal getLaborCost() {
+        return laborCost;
+    }
+    public boolean isDone() {
+        return done;
+    }
 
     public void markDone() {
         if (done) throw new BusinessException("Work already marked as done");

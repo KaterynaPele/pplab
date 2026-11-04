@@ -15,12 +15,18 @@ public class Mechanic {
         this.specialization = specialization;
     }
 
-    public String getId() { return id; }
-    public String getName() { return name; }
-    public Specialization getSpecialization() { return specialization; }
-
-    public boolean isBusy() { return busy; }
-    public void setBusy(boolean busy) { this.busy = busy; }
+    public String getId() {
+        return id;
+    }
+    public String getName() {
+        return name;
+    }
+    public boolean isBusy() {
+        return busy;
+    }
+    public void setBusy(boolean busy) {
+        this.busy = busy;
+    }
 
     @Override
     public String toString() {

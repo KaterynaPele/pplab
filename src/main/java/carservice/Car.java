@@ -18,9 +18,12 @@ public class Car {
         this.owner = owner;
     }
 
-    public String getVin() { return vin; }
-    public Client getOwner() { return owner; }
-
+    public String getVin() {
+        return vin;
+    }
+    public Client getOwner() {
+        return owner;
+    }
     public String toString() {
         return "Car{" + vin + " " + make + " " + model + " " + year + " owner=" + owner.getName() + "}";
     }
